@@ -10,11 +10,15 @@
 2. 挂载cnf文件与本地mysql数据文件目录
 3. 镜像本身未做改动
 
-### 命令 
+### 命令
+* 拉取镜像
+ ```
+ docker pull mysql:5.7.23
+ ```
 
 * 创建容器并启动
 ```
-docker run -d --name mysql_5.7.23_dev -p 3306:3306 --privileged=true -v /data/docker-lib/mysql/my.cnf:/etc/my.cnf -v /data/volume/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=caiqiu502 mysql:5.7.23
+docker run -d --name mysql_5.7.23_dev -p 3306:3306 --privileged=true -v $PWD/conf/my.cnf:/etc/my.cnf -v $PWD/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=caiqiu502 mysql:5.7.23
 ```
 
 * 参数说明
