@@ -1,2 +1,2 @@
-# docker-lib
-存放各种docker image构建脚本或者快速启动的docker-compose文件。
+存放各种docker image构建脚本或者快速启动的docker-compose文件。   
+实现：一处构建，处处可用，不需要四处找安装文件，方便健忘人士和减轻开发工程师的负担。   
