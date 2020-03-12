@@ -10,10 +10,10 @@
 使用方法可参考 https://hub.docker.com/_/consul/
 * Build镜像
 ```
-docker build -t caiqr-consul:0.7.5-dev . 
+docker build -t consul:0.7.5-dev . 
 ```
 
 * 启动容器
 ``` 
-docker run -d --name=consul-dev-0.7.5 -p 8500:8500 -p 8300:8300 -p 8301:8301 -p 8302:8302 -p 8400:8400 -p 8600:8600 -e CONSUL_BIND_INTERFACE=eth0 镜像ID
+docker run -d --name=consul -p 8500:8500 -p 8300:8300 -p 8301:8301 -p 8302:8302 -p 8400:8400 -p 8600:8600 -e CONSUL_BIND_INTERFACE=eth0 镜像ID
 ```

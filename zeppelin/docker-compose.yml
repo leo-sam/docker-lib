@@ -1,0 +1,14 @@
+version: '3'
+services:
+  zeppelin_snapshot:
+    image: apache/zeppelin:0.8.2
+    ports:
+      - "8888:8080"
+    volumes:
+      - $PWD/logs:/logs
+      - $PWD/notebook:/notebook
+      - $PWD/data:/data
+      - $PWD/config:/config
+    environment:
+      ZEPPELIN_LOG_DIR: /logs
+      ZEPPELIN_NOTEBOOK_DIR: /notebook
