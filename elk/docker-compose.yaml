@@ -2,16 +2,16 @@ version: '2.2'
 services:
   cerebro:
     image: lmenezes/cerebro:0.8.3
-    container_name: hwc_cerebro
+    container_name: cerebro
     ports:
       - "9000:9000"
     command:
       - -Dhosts.0.host=http://elasticsearch:9200
     networks:
-      - hwc_es7net
+      - es72net
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.1.0
-    container_name: hwc_kibana7
+    image: docker.elastic.co/kibana/kibana:7.2.0
+    container_name: kibana72
     environment:
       #- I18N_LOCALE=zh-CN
       - XPACK_GRAPH_ENABLED=true
@@ -20,76 +20,55 @@ services:
     ports:
       - "5601:5601"
     networks:
-      - hwc_es7net
+      - es72net
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.0
-    container_name: es7_hot
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    container_name: es72_01
     environment:
-      - cluster.name=geektime-hwc
-      - node.name=es7_hot
-      - node.attr.box_type=hot
+      - cluster.name=geektime
+      - node.name=es72_01
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery.seed_hosts=es7_hot,es7_warm,es7_cold
-      - cluster.initial_master_nodes=es7_hot,es7_warm,es7_cold
+      - discovery.seed_hosts=es72_01
+      - network.publish_host=elasticsearch
+      - cluster.initial_master_nodes=es72_01,es72_02
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - hwc_es7data_hot:/usr/share/elasticsearch/data
+      - es72data1:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
     networks:
-      - hwc_es7net
+      - es72net
   elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.0
-    container_name: es7_warm
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    container_name: es72_02
     environment:
-      - cluster.name=geektime-hwc
-      - node.name=es7_warm
-      - node.attr.box_type=warm
+      - cluster.name=geektime
+      - node.name=es72_02
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery.seed_hosts=es7_hot,es7_warm,es7_cold
-      - cluster.initial_master_nodes=es7_hot,es7_warm,es7_cold
+      - discovery.seed_hosts=es72_01
+      - network.publish_host=elasticsearch
+      - cluster.initial_master_nodes=es72_01,es72_02
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - hwc_es7data_warm:/usr/share/elasticsearch/data
+      - es72data2:/usr/share/elasticsearch/data
     networks:
-      - hwc_es7net
-  elasticsearch3:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.0
-    container_name: es7_cold
-    environment:
-      - cluster.name=geektime-hwc
-      - node.name=es7_cold
-      - node.attr.box_type=cold
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - discovery.seed_hosts=es7_hot,es7_warm,es7_cold
-      - cluster.initial_master_nodes=es7_hot,es7_warm,es7_cold
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - hwc_es7data_cold:/usr/share/elasticsearch/data
-    networks:
-      - hwc_es7net
+      - es72net
 
 
 volumes:
-  hwc_es7data_hot:
+  es72data1:
     driver: local
-  hwc_es7data_warm:
-    driver: local
-  hwc_es7data_cold:
+  es72data2:
     driver: local
 
 networks:
-  hwc_es7net:
+  es72net:
     driver: bridge
