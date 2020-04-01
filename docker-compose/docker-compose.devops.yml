@@ -21,28 +21,31 @@ services:
       - rabbitmq
 
   elasticsearch:
-    image: elasticsearch:7.6.1
+    build:
+      context: ./devops/elk/elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
     container_name: sc-elasticsearch
     restart: always
-    environment:
-      - cluster.name=elasticsearch
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-      - node.name=elasticsearch_node_1
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     volumes:
-      - ../data/elasticsearch/data:/usr/share/elasticsearch/data
-      - ../data/elasticsearch/logs:/usr/share/elasticsearch/logs
-      - ./devops/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - type: bind
+        source: ./devops/elk/elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      # ELASTIC_PASSWORD: changeme
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
     networks:
       - sc-net
-    ports:
-      - 9200:9200
-      - 9300:9300
 
   skywalking-oap:
     image: apache/skywalking-oap-server:7.0.0-es7
@@ -75,20 +78,6 @@ services:
     environment:
       collector.ribbon.listOfServers: skywalking-oap:12800
 
-  kibana:
-    image: kibana:7.6.1
-    container_name: sc-kibana
-    restart: always
-    volumes:
-      - ../data/kibana/logs:/var/logs/kibana
-      - ./devops/kibana.yml:/etc/kibana/kibana.yml
-    networks:
-      - sc-net
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
-
   grafana:
     image: grafana/grafana
     container_name: sc-grafana
@@ -99,3 +88,52 @@ services:
       - sc-net
     ports:
       - 3000:3000
+
+  logstash:
+    build:
+      context: logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: sc-logstash
+    restart: always
+    volumes:
+      - type: bind
+        source: ./devops/elk/logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ./logstash/pipeline
+        target: /usr/share/logstash/pipeline
+        read_only: true
+    ports:
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - sc-net
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: sc-kibana
+    restart: always
+    volumes:
+      - type: bind
+        source: ./devops/elk/kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    ports:
+      - "5601:5601"
+    networks:
+      - sc-net
+    depends_on:
+      - elasticsearch
+
+volumes:
+  elasticsearch:
