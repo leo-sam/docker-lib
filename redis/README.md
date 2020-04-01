@@ -9,7 +9,7 @@
 
 * 创建容器并启动
 ```
-docker run -d --name redis_4.0.14_dev -p 6379:6379 --privileged=true -v /data/volume/redis:/data  -d redis:4.0.14 redis-server --appendonly yes
+docker run -d --name redis -p 6379:6379 --privileged=true -v /data/volume/redis:/data  -d redis:4.0.14 redis-server --appendonly yes
 ```
 
 * 参数说明
