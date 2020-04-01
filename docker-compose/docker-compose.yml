@@ -41,6 +41,19 @@ services:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: root123
 
+  # mysql-init:
+  #   image: mysql:5.7
+  #   command: /init-db.sh
+  #   networks:
+  #     - sc-net
+  #   volumes:
+  #     - ../auth/db:/sql/auth
+  #     - ../gateway/gateway-admin/src/main/db:/sql/gateway
+  #     - ../sysadmin/db:/sql/sysadmin
+  #     - ./init-db.sh:/init-db.sh
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root123
+
 networks:
   sc-net:
     external: false
