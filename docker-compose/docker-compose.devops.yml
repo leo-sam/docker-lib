@@ -92,7 +92,7 @@ services:
 
   logstash:
     build:
-      context: logstash/
+      context: ./devops/elk/logstash/
       args:
         ELK_VERSION: $ELK_VERSION
     container_name: sc-logstash
@@ -119,7 +119,7 @@ services:
 
   kibana:
     build:
-      context: kibana/
+      context: ./devops/elk/kibana/
       args:
         ELK_VERSION: $ELK_VERSION
     container_name: sc-kibana
