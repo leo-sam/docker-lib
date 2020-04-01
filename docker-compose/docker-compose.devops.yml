@@ -1,4 +1,5 @@
-version: '3'
+version: '3.2'
+
 services:
   zipkin-server:
     image: openzipkin/zipkin
@@ -102,7 +103,7 @@ services:
         target: /usr/share/logstash/config/logstash.yml
         read_only: true
       - type: bind
-        source: ./logstash/pipeline
+        source: ./devops/elk/logstash/pipeline
         target: /usr/share/logstash/pipeline
         read_only: true
     ports:
