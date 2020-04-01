@@ -21,7 +21,7 @@ services:
       - rabbitmq
 
   elasticsearch:
-    image: elasticsearch:5.6-alpine
+    image: elasticsearch:7.6.1
     container_name: sc-elasticsearch
     restart: always
     environment:
@@ -45,7 +45,7 @@ services:
       - 9300:9300
 
   skywalking-oap:
-    image: wutang/skywalking-oap:6.1.0
+    image: apache/skywalking-oap-server:7.0.0-es7
     container_name: skywalking-oap
     networks:
       - sc-net
@@ -61,7 +61,7 @@ services:
       - ./devops/skywalking/config:/apache-skywalking-apm-bin/config:ro
 
   skywalking-ui:
-    image: wutang/skywalking-ui:6.1.0
+    image: apache/skywalking-ui:7.0.0
     container_name: skywalking-ui
     networks:
       - sc-net
@@ -76,7 +76,7 @@ services:
       collector.ribbon.listOfServers: skywalking-oap:12800
 
   kibana:
-    image: kibana:5.6.14
+    image: kibana:7.6.1
     container_name: sc-kibana
     restart: always
     volumes:
