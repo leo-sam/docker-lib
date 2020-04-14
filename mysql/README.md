@@ -14,7 +14,7 @@
 
 * 创建容器并启动
 ```
-docker run -d --name mysql -p 3306:3306 --privileged=true -v /data/docker-lib/mysql/my.cnf:/etc/my.cnf -v /data/volume/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root mysql:5.7.23
+docker run -d --name mysql -p 3306:3306 --privileged=true -v /data/volume/mysql/my.cnf:/etc/my.cnf -v /data/volume/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=root mysql:5.7.23
 ```
 
 * 参数说明
